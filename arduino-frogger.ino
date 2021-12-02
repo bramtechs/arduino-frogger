@@ -1,10 +1,10 @@
 #include "LedControl.h"
-const int FPS = 30;
+const int FPS = 10;
 int huidigeFrame;
 bool scherm[8][8];
 
 #include "kikker.h"
-#include "verkeer.h"
+#include "obstakel.h"
 
 LedControl lc=LedControl(7,6,5,1);
 // DIN, CLK and CS pins
@@ -22,9 +22,9 @@ void setup() {
 
 void teken()
 {  
-  kikker_teken();
   autos_teken();
-
+  stammen_teken();
+  kikker_teken();
   
   // matrix.clear();
   // overloop iedere pixel in de 2D scherm array
@@ -42,9 +42,10 @@ void teken()
 void loop() {
   checkJoystick();
   autos_beweeg();
+  stammen_beweeg();
   teken();
 
-  Serial.println(huidigeFrame);
+  //Serial.println(huidigeFrame);
   
   huidigeFrame++;
   delay(1000/FPS);
