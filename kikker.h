@@ -1,52 +1,81 @@
+#ifndef KIKKER_H
+#define KIKKER_H
+
 #include "joystick.h"
-struct Kikker{
-  int x;
-  int y;
-};
+#include "obstakel.h"
 
-// maak een kikker aan
-Kikker kikker = {4,0};
+const int cooldown = 2; // maakt de kikker makkelijker te besturen
 
-void kikker_start(){
-  // start de joystick op
-  joy_setup();
+int timer;
+bool levend;
+int kikkerX;
+int kikkerY;
+
+void kikker_reset(){
+  kikkerX = 4;
+  kikkerY = 6;
+  levend = true;
+  timer = 0;
 }
 
 void kikker_beweeg(int x, int y)
 {
-  kikker.x = max(0,min(kikker.x + x,7));
-  kikker.y = max(0,min(kikker.y + y,7));
-  
-  //Serial.println("=========");
-  //Serial.println(kikker.x);
-  //Serial.println(kikker.y);
+  kikkerX = max(0, min(kikkerX + x, 7));
+  kikkerY = max(0, min(kikkerY + y, 7));
 }
 
-void kikker_teken(){
-  // teken de kikker!
-  if (huidigeFrame % 2 == 1){
-    scherm[kikker.x][kikker.y] = true;
+void kikker_sterf(){
+  Serial.println("je suckt");
+  levend = false;
+}
+
+void kikker_update()
+{
+  int kwadrant = joy_get_kwadrant();
+
+  // kijk voor aanrijding
+  if (obstakel_raakt(kikkerX,kikkerY)){
+    kikker_sterf();
+    return;
   }
-}
 
-void checkJoystick(){
-  //joy_print();
-  switch (joy_get_richting())
+  if (joy_is_deadzone()){
+    timer = 0;
+  }
+  else if (timer <= 0)
   {
+    switch (kwadrant)
+    {
     case 3:
-      kikker_beweeg(0,-1);
+      kikker_beweeg(0, -1);
+      timer = cooldown;
       break;
     case 1:
-      kikker_beweeg(0,1);
+      kikker_beweeg(0, 1);
+      timer = cooldown;
       break;
     case 2:
-      kikker_beweeg(-1,0);
+      kikker_beweeg(-1, 0);
+      timer = cooldown;
       break;
     case 4:
-      kikker_beweeg(1,0);
+      kikker_beweeg(1, 0);
+      timer = cooldown;
       break;
     default:
       // beweeg niet
       break;
+    }
+  }
+  timer--;
+}
+
+void kikker_teken()
+{
+  // teken de kikker!
+  if (huidigeFrame % 2 == 1)
+  {
+    teken_pixel(kikkerX, kikkerY);
   }
 }
+#endif
