@@ -1,52 +1,64 @@
 #include "LedControl.h"
+
 const int FPS = 10;
 int huidigeFrame;
-bool scherm[8][8];
+LedControl lc = LedControl(7, 6, 5, 1);
 
+#include "grafisch.h"
 #include "kikker.h"
 #include "obstakel.h"
 
-LedControl lc=LedControl(7,6,5,1);
-// DIN, CLK and CS pins
-// VCC voor stroom
+const int RESPAWN_TIJD = 3000 / FPS; //3 sec
+int respawn_timer;
 
-void setup() {
-  Serial.begin(9600);  
-  
-  lc.shutdown(0,false);
-  lc.setIntensity(0,5);
+void setup()
+{
+  Serial.begin(9600);
+
+  lc.shutdown(0, false);
+  lc.setIntensity(0, 5);
   lc.clearDisplay(0);
 
-  kikker_start();
+  joy_setup();
+  reset();
 }
 
-void teken()
-{  
-  autos_teken();
-  stammen_teken();
-  kikker_teken();
-  
-  // matrix.clear();
-  // overloop iedere pixel in de 2D scherm array
-  // https://www.educba.com/2-d-arrays-in-c/
+void reset()
+{
+  kikker_reset();
+  respawn_timer = 0;
+  Serial.println("nieuw level");
+}
+
+void loop()
+{
+  joy_print();
+
   lc.clearDisplay(0);
-  for (int y = 0; y < 8; y++){
-    for (int x = 0; x < 8; x++){
-      lc.setLed(0,x,y,scherm[x][y]);
-    }
+
+  if (levend)
+  {
+    kikker_update();
+    autos_beweeg();
+    //stammen_beweeg();
+
+    // teken
+
+    autos_teken();
+    //stammen_teken();
+    kikker_teken();
+    Serial.println(huidigeFrame);
   }
-  // maak de 2d array weer leeg
-  memset(scherm, 0, sizeof(scherm[0][0]) * 8 * 8);
-}
-
-void loop() {
-  checkJoystick();
-  autos_beweeg();
-  stammen_beweeg();
-  teken();
-
-  //Serial.println(huidigeFrame);
-  
+  else if (respawn_timer < RESPAWN_TIJD)
+  {
+    // respawn wanneer dood
+    respawn_timer++;
+    teken_sterfte();
+  }
+  else
+  {
+    reset();
+  }
   huidigeFrame++;
-  delay(1000/FPS);
+  delay(1000 / FPS);
 }
