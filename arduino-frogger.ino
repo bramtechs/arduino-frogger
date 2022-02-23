@@ -8,7 +8,7 @@ LedControl lc = LedControl(7, 6, 5, 1);
 #include "kikker.h"
 #include "obstakel.h"
 
-const int RESPAWN_TIJD = 3000 / FPS; //3 sec
+const int RESPAWN_TIJD = 30; //3 sec
 int respawn_timer;
 
 void setup()
