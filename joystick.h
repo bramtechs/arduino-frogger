@@ -2,9 +2,9 @@
 #ifndef JOYSTICK_H
 #define JOYSTICK
 
-const int VRx = A0;
-const int VRy = A1;
-const int SW = 4;
+const int VRx = A2;
+const int VRy = A3;
+const int SW = 5;
 
 const int DEAD_ZONE = 50;
 

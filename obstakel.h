@@ -114,7 +114,7 @@ void autos_teken(){
       int x = autos[i].x+j;
       if (x <= 7 and x >= 0){
         // voertuig in beeld tekenen
-        teken_pixel(x,i);
+        teken_pixel(x,i,RED);
       }
     }
   }

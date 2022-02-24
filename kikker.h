@@ -6,6 +6,8 @@
 
 const int cooldown = 2; // maakt de kikker makkelijker te besturen
 
+int levens = 5;
+
 int timer;
 bool levend;
 int kikkerX;
@@ -16,6 +18,7 @@ void kikker_reset(){
   kikkerY = 6;
   levend = true;
   timer = 0;
+  lcd_print("Aantal kikkers ",String(levens));
 }
 
 void kikker_beweeg(int x, int y)
@@ -25,7 +28,8 @@ void kikker_beweeg(int x, int y)
 }
 
 void kikker_sterf(){
-  Serial.println("je suckt");
+  lcd_print("DOOD",":(");
+  levens--;
   levend = false;
 }
 
@@ -75,7 +79,7 @@ void kikker_teken()
   // teken de kikker!
   if (huidigeFrame % 2 == 1)
   {
-    teken_pixel(kikkerX, kikkerY);
+    teken_pixel(kikkerX, kikkerY,GREEN);
   }
 }
 #endif
