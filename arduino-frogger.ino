@@ -1,10 +1,20 @@
-#include "LedControl.h"
-
 const int FPS = 10;
 int huidigeFrame;
-LedControl lc = LedControl(7, 6, 5, 1);
 
+/*
+/// PIN LAYOUT ///
+DATA IN-pin, CLK-pin, LOAD(/CS)-pin : BI-color scherm
+   2              3         4
+
+SCL  SDA: LCD-tekst
+ A5   A4
+
+VRx  VRy  SW
+ A2   A3   5
+
+*/
 #include "grafisch.h"
+#include "lcd.h"
 #include "kikker.h"
 #include "obstakel.h"
 
@@ -14,12 +24,12 @@ int respawn_timer;
 void setup()
 {
   Serial.begin(9600);
-
-  lc.shutdown(0, false);
-  lc.setIntensity(0, 5);
-  lc.clearDisplay(0);
-
+  
+  led_setup();
   joy_setup();
+  lcd_setup();
+  lcd_print("Welkom!","");
+  
   reset();
 }
 
