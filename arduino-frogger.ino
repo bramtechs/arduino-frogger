@@ -121,8 +121,6 @@ void joy_print()
   }
   Serial.print(" | Richting: ");
   Serial.println(kwadrant);
-
-  delay(100);
 }
 
 // === Kikker ===
@@ -139,7 +137,7 @@ int kikkerY;
 
 void kikker_reset(){
   kikkerX = 4;
-  kikkerY = 6;
+  kikkerY = 0;
   levend = true;
   timer = 0;
   lcd_print("Kikkers ",String(levens));
@@ -238,19 +236,19 @@ Obstakel stammen[] = {
   
   // achterste rij
   
-  {5,7,3,1},
+  {5,6,3,1},
   
-  {1,7,2,1},
+  {1,6,2,1},
   
   // middelste rij
   
-  {4,6,2,1},
+  {4,5,2,1},
 
   // voorste rij
   
-  {2,5,2,1},
+  //{2,4,2,1},
 
-  {7,5,2,1},
+  //{7,4,2,1},
 
 };
 int aantal_stammen = sizeof(stammen)/sizeof(stammen[0]);
@@ -286,6 +284,23 @@ void stammen_update(){
       stammen[i].x = x;
     }
   }
+
+  //kleur de volledige rivier
+  lc.setColumn(0,5,B11111111);
+  lc.setColumn(0,6,B11111111);
+  
+  // teken de stammen
+//  for (int i = 0; i < aantal_stammen; i++){
+//    // is het voertuig-onderdeel binnen het speelveld?
+//    for (int j = 0; j < stammen[i].lengte; j++){
+//      int x = stammen[i].x+j;
+//      if (x <= 7 and x >= 0){
+//        // stam in beeld tekenen
+//        teken_pixel(x,i);
+//      }
+//    }
+//  }
+  
 }
 
 void autos_update(){
@@ -309,9 +324,10 @@ void autos_update(){
     // is het voertuig-onderdeel binnen het speelveld?
     for (int j = 0; j < autos[i].lengte; j++){
       int x = autos[i].x+j;
+      int y = autos[i].y;
       if (x <= 7 and x >= 0){
         // voertuig in beeld tekenen
-        teken_pixel(x,i);
+        teken_pixel(x,y);
       }
     }
   }
@@ -364,7 +380,8 @@ void setup()
 
   //lcd setup
   lcd.init();
-  lcd.backlight();
+  kikker_reset();
+  //lcd.backlight();
 }
 
 void loop()
@@ -375,6 +392,7 @@ void loop()
     case SPEL:
       kikker_update();
       autos_update();
+      stammen_update();
       lcd_print_status();
       break;
     case DOOD:
