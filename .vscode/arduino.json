@@ -1,7 +1,0 @@
-{
-    "board": "arduino:avr:uno",
-    "port": "COM5",
-    "output": "./build",
-    "programmer": "arduino:avrisp",
-    "sketch": "arduino-frogger.ino"
-}
