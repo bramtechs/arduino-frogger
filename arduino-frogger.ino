@@ -19,7 +19,7 @@ const int GREEN = 0;
 const int RED = 1;
 
 // DATA IN-pin, CLK-pin, LOAD(/CS)-pin, aantal schermen
-LedControl lc = LedControl(2, 3, 4, 1);
+LedControl lc = LedControl(2, 3, 4, 2);
 LiquidCrystal_I2C lcd(0x27,16,2);
 const int SW = 5;
 const int VRx = A2; // joystick analoog X
@@ -45,7 +45,9 @@ void teken_pixel(int x, int y)
   {
     if (y >= 0 && y < 8)
     {
-      lc.setLed(0, x, y, true);
+      lc.setLed(0, 7-y, x, true);
+    }else if (y < 16){
+      lc.setLed(1, y-8, 7-x, true);
     }
   }
 }
@@ -56,7 +58,9 @@ void teken_leegte(int x, int y)
   {
     if (y >= 0 && y < 8)
     {
-      lc.setLed(0, x, y, false);
+      lc.setLed(0, y, x, false);
+    }else if (y < 16){
+      lc.setLed(1, y-8, x, false);
     }
   }
 }
@@ -125,7 +129,7 @@ void joy_print()
 
 // === Kikker ===
 const int COOLDOWN = 2; // maakt de kikker makkelijker te besturen
-const bool TEST_MODE = true;
+const bool TEST_MODE = false;
 
 int levens = 99;
 int timer;
@@ -146,7 +150,7 @@ void kikker_reset(){
 void kikker_beweeg(int x, int y)
 {
   kikkerX = max(0, min(kikkerX + x, 7));
-  kikkerY = max(0, min(kikkerY + y, 7));
+  kikkerY = max(0, min(kikkerY + y, 15));
 }
 
 void kikker_sterf(){
@@ -154,6 +158,7 @@ void kikker_sterf(){
   Serial.println("dood");
   levens--;
   levend = false;
+  kikker_reset();
 }
 
 void kikker_update()
@@ -205,50 +210,64 @@ void kikker_update()
 struct Obstakel{
   int x;
   int y;
-  int lengte;
   int richting;
 };
 int marge = 2;
 
 // === VOERTUIGEN === //
 Obstakel autos[] = {
-  
-  // achterste rij
-  
-  {5,3,3,1},
-  
-  {1,3,2,1},
-  
-  // middelste rij
-  
-  {4,2,2,-1},
 
-  // voorste rij
+  {1,6,1},
+  {2,6,1},
   
-  {2,1,2,1},
+  {5,6,1},
+  {6,6,1},
 
-  {7,1,2,1},
+  {2,5,-1},
+  {3,5,-1},
+  
+  {5,5,-1},
+  {6,5,-1},
+  {7,5,-1},
+  
+  {2,4,1},
+  
+  {3,4,1},
+    
+  // 3 buffer
+
+  {4,2,-1},
+  {5,2,-1},
+  
+  {2,1,1},
+  {3,1,1},
+  {7,1,1},
+  {6,1,1},
 };
 int aantal_autos = sizeof(autos)/sizeof(autos[0]);
 
 // === BOOMSTAMMEN === //
 Obstakel stammen[] = {
   
-  // achterste rij
+  {1,12,1},
   
-  {5,6,3,1},
-  
-  {1,6,2,1},
-  
-  // middelste rij
-  
-  {4,5,2,1},
+  {5,12,1},
 
-  // voorste rij
+  {2,11,-1},
   
-  //{2,4,2,1},
+  {5,11,-1},
 
-  //{7,4,2,1},
+  {2,10,1},
+  
+  {3,10,1},
+    
+  // 3 buffer
+
+  {4,9,-1},
+  
+  {2,9,1},
+
+  {7,9,1},
 
 };
 int aantal_stammen = sizeof(stammen)/sizeof(stammen[0]);
@@ -258,14 +277,11 @@ bool obstakel_raakt(int x, int y){
   for (int i = 0; i < aantal_autos; i++)
   {
     int yy = autos[i].y;
-    for (int j = 0; j < autos[i].lengte; j++) // rekening houden met lengte auto
-    {
-        int xx = autos[i].x+j;
-        if (x == xx && y == yy){
-          return true;
-        }
+    int xx = autos[i].x;
+    if (x == xx && y == yy){
+      return true;
     }
-  }
+    }
   return false;
 }
 
@@ -286,20 +302,19 @@ void stammen_update(){
   }
 
   //kleur de volledige rivier
-  lc.setColumn(0,5,B11111111);
-  lc.setColumn(0,6,B11111111);
+  //lc.setColumn(0,5,B11111111);
+  //lc.setColumn(0,6,B11111111);
   
-  // teken de stammen
-//  for (int i = 0; i < aantal_stammen; i++){
-//    // is het voertuig-onderdeel binnen het speelveld?
-//    for (int j = 0; j < stammen[i].lengte; j++){
-//      int x = stammen[i].x+j;
-//      if (x <= 7 and x >= 0){
-//        // stam in beeld tekenen
-//        teken_pixel(x,i);
-//      }
-//    }
-//  }
+//  // teken de stammen
+  for (int i = 0; i < aantal_stammen; i++){
+    // is het voertuig-onderdeel binnen het speelveld?
+      int x = stammen[i].x;
+        int y = stammen[i].y;
+      if (x <= 7 and x >= 0){
+        // stam in beeld tekenen
+        teken_leegte(x,y);
+      }
+    }
   
 }
 
@@ -322,14 +337,12 @@ void autos_update(){
   // teken de voertuigen
   for (int i = 0; i < aantal_autos; i++){
     // is het voertuig-onderdeel binnen het speelveld?
-    for (int j = 0; j < autos[i].lengte; j++){
-      int x = autos[i].x+j;
+      int x = autos[i].x;
       int y = autos[i].y;
       if (x <= 7 and x >= 0){
         // voertuig in beeld tekenen
         teken_pixel(x,y);
       }
-    }
   }
 }
 
@@ -371,7 +384,9 @@ void setup()
 
   // led setup
   lc.shutdown(0,false); 
-  lc.setIntensity(0, 15);
+  lc.setIntensity(0, 10);
+  lc.shutdown(1,false); 
+  lc.setIntensity(0, 10);
   
   // joystick setup
   pinMode(VRx, INPUT);       // VRx
@@ -387,7 +402,8 @@ void setup()
 void loop()
 {
   lc.clearDisplay(0);
-
+  lc.clearDisplay(1);
+  
   switch (state){
     case SPEL:
       kikker_update();
@@ -401,7 +417,6 @@ void loop()
       teken_sterfte();
       if (respawn_timer > RESPAWN_TIJD){
         state = SPEL;
-        kikker_reset();
         respawn_timer = 0;
       }
       break;
