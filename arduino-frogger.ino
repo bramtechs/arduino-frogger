@@ -1,5 +1,5 @@
 #include <LedControl.h>
-#include "LiquidCrystal_I2C.h"
+#include "./LiquidCrystal_I2C.h"
 
 enum State{
   MENU,
@@ -131,7 +131,7 @@ void joy_print()
 const int COOLDOWN = 2; // maakt de kikker makkelijker te besturen
 const bool TEST_MODE = false;
 
-int levens = 99;
+int levens = 5;
 int timer;
 
 bool levend;
@@ -233,9 +233,7 @@ Obstakel autos[] = {
   {2,4,1},
   
   {3,4,1},
-    
-  // 3 buffer
-
+  
   {4,2,-1},
   {5,2,-1},
   
@@ -250,21 +248,20 @@ int aantal_autos = sizeof(autos)/sizeof(autos[0]);
 Obstakel stammen[] = {
   
   {1,12,1},
+  {2,12,1},
   
-  {5,12,1},
+  {3,12,1},
+  {6,12,1},
+  {7,12,1},
 
   {2,11,-1},
-  
-  {5,11,-1},
+  {3,11,-1},
 
   {2,10,1},
-  
   {3,10,1},
     
-  // 3 buffer
-
-  {4,9,-1},
-  
+  {4,9,1},
+  {3,9,1},
   {2,9,1},
 
   {7,9,1},
@@ -278,9 +275,9 @@ bool obstakel_raakt(int x, int y){
   {
     int yy = autos[i].y;
     int xx = autos[i].x;
-    if (x == xx && y == yy){
-      return true;
-    }
+      if (x == xx && y == yy){
+        return true;
+      }
     }
   return false;
 }
@@ -299,23 +296,26 @@ void stammen_update(){
       }
       stammen[i].x = x;
     }
+  
   }
 
-  //kleur de volledige rivier
-  //lc.setColumn(0,5,B11111111);
-  //lc.setColumn(0,6,B11111111);
-  
-//  // teken de stammen
-  for (int i = 0; i < aantal_stammen; i++){
-    // is het voertuig-onderdeel binnen het speelveld?
-      int x = stammen[i].x;
-        int y = stammen[i].y;
-      if (x <= 7 and x >= 0){
-        // stam in beeld tekenen
-        teken_leegte(x,y);
+  // teken de rivier
+  for (int y = 9; y <= 12; y++){
+    int rij = 0b11111111; // alle ledjes opgelicht
+     // vul de rij op
+    for (int x = 0; x < 8; x++){
+      for (int i = 0; i < aantal_stammen; i++){
+        // is op deze pixel een boomstam?
+        if (stammen[i].x == x && stammen[i].y == y){
+          // boomstam hier, pixel leeg maken
+          rij &= ~(1 << x); // zet de bit op positie x 0
+
+          // is de kikker op deze positie?, zoja, voer hem mee in de juiste richting
+        }
       }
     }
-  
+    lc.setRow(1,y%8,rij); //geef de rij door
+  }
 }
 
 void autos_update(){
@@ -384,9 +384,9 @@ void setup()
 
   // led setup
   lc.shutdown(0,false); 
-  lc.setIntensity(0, 10);
+  lc.setIntensity(0, 4);
   lc.shutdown(1,false); 
-  lc.setIntensity(0, 10);
+  lc.setIntensity(0, 4);
   
   // joystick setup
   pinMode(VRx, INPUT);       // VRx
