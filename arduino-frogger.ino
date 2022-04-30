@@ -50,7 +50,7 @@ VRx  VRy  SW
 void kikker_gestorven(){
   lcd_print("DOOD",":(");
   kikker_sterf();
-  lcd_print("Kikkers ",String(levens));
+
 }
 
 // === MAIN ===
@@ -77,16 +77,19 @@ void setup()
 
 void loop()
 {
-  lc.clearDisplay(0);
-  lc.clearDisplay(1);
-  
   switch (state){
+    case MENU:
+      lcd_print_menu();
+      teken_menu();
+      break;
     case SPEL:
+      lc.clearDisplay(0);
+      lc.clearDisplay(1);
       autos_update();
       stammen_update();
       huisjes_update();
       kikker_update();
-      lcd_print_status();
+      lcd_print_spel_status();
       break;
     case DOOD:
       // respawn wanneer dood

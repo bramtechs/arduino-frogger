@@ -38,3 +38,26 @@ void teken_sterfte()
     }
   }
 }
+
+int kikker[] = {
+  0b00000000,
+  0b11100111,
+  0b10100101,
+  0b11011011,
+  0b01000010,
+  0b01100110,
+  0b10100101,
+  0b01100110
+};
+
+//https://codeforwin.org/2016/01/c-program-to-get-value-of-nth-bit-of-number.html
+void teken_menu(){
+  for (int y = 0; y < 8; y++){
+    for (int x = 0; x < 8; x++){
+        bool aan = (kikker[y] >> x) & 1 == 1;
+        if (aan){
+          teken_pixel(x,16-y);
+        }
+    }
+  }     
+}

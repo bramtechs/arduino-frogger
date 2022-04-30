@@ -24,8 +24,12 @@ String lcd_tijd(){
   return tijd;
 }
 
-void lcd_print_status(){
+void lcd_print_spel_status(){
   if (huidigeFrame % FPS ==0){
     lcd_print("Kikkers " + String(levens),lcd_tijd());
   }
+}
+
+void lcd_print_menu(){
+    lcd_print("Welkom bij","Arduino Frogger!");
 }
