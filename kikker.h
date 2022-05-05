@@ -30,6 +30,10 @@ void kikker_sterf(){
   levend = false;
   kikker_reset();
 }
+void kikker_win(){
+  Serial.println("Kikker veilig!");
+  kikker_reset();
+}
 
 void kikker_update()
 {

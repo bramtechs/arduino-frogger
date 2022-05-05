@@ -5,8 +5,7 @@ const int DEAD_ZONE = 50;
 int vorigKwadrant;
 int cooldownFrames;
 
-// joystick in een richting vasthouden: matige snelheid
-// joystick keer op keer "aanduwen": extra snelheid
+// de richting van de joystick
 int joy_get_kwadrant()
 {
   float x = map(analogRead(VRx), 0, 1023, -512, 512);
