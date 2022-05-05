@@ -1,6 +1,6 @@
 # TODO
 - [ ] Level design
-- [ ] Hitboxes huisjes
-- [ ] Menu
+- [X] Hitboxes huisjes
+- [X] Menu
 - [ ] Animatie sterfte
 - [ ] Animatie gewonnen

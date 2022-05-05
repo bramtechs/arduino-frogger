@@ -46,13 +46,6 @@ VRx  VRy  SW
 #include "obstakel.h"
 #include "huisjes.h"
 
-
-void kikker_gestorven(){
-  lcd_print("DOOD",":(");
-  kikker_sterf();
-
-}
-
 // === MAIN ===
 void setup()
 {
@@ -81,6 +74,9 @@ void loop()
     case MENU:
       lcd_print_menu();
       teken_menu();
+      if (!joy_is_deadzone()){ // menu verlaten door joystick te bewegen
+        state = SPEL;
+      }
       break;
     case SPEL:
       lc.clearDisplay(0);
