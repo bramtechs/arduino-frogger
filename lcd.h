@@ -25,9 +25,13 @@ String lcd_tijd(){
 }
 
 void lcd_print_spel_status(){
-  if (huidigeFrame % FPS ==0){
+  if (huidigeFrame % FPS == 0){
     lcd_print("Kikkers " + String(levens),lcd_tijd());
   }
+}
+
+void lcd_print_gewonnen(){
+  lcd_print("Gewonnen!",lcd_tijd());
 }
 
 void lcd_print_menu(){

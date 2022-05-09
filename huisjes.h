@@ -23,20 +23,26 @@ bool is_huisje(int x) {
   return false;
 }
 
+void huisjes_reset(){
+  for (int i = 0; i < aantal_huisjes; i++){
+    huisjes[i].voltooid = false;
+  }
+}
+
 void huisjes_update() {
   int y = 15;
   // teken muren rond de huisjes
   for (int x = 0; x < 8; x++) {
     if (!is_huisje(x)) {
       teken_pixel(x, y);
+    }
 
-      // duw de kikker weg wanneer deze in een muur zit
+    // duw de kikker weg wanneer deze in een muur zit
       if (x % 2 == 1) {
         if (x == kikkerX && kikkerY == y) {
           kikkerY--;
         }
       }
-    }
   }
 
   for (int i = 0; i < aantal_huisjes; i++) {
