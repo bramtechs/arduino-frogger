@@ -2,12 +2,16 @@
 #include "./LiquidCrystal_I2C.h"
 
 enum State{
+  MENU_SETUP,
   MENU,
+  SPEL_SETUP,
   SPEL,
+  DOOD_SETUP,
   DOOD,
+  WIN_SETUP,
   WIN
 };
-State state = SPEL;
+State state = MENU;
 
 const int FPS = 10;
 int huidigeFrame;
@@ -64,20 +68,25 @@ void setup()
 
   //lcd setup
   lcd.init();
-  kikker_reset();
   lcd.backlight();
 }
 
 void loop()
 {
   switch (state){
-    case MENU:
+    case MENU_SETUP:
       lcd_print_menu();
+      huisjes_reset();
+      state = MENU;
+    case MENU:
       teken_menu();
       if (!joy_is_deadzone()){ // menu verlaten door joystick te bewegen
         state = SPEL;
       }
       break;
+    case SPEL_SETUP: // per ronde
+      kikker_reset();
+      state = SPEL;
     case SPEL:
       lc.clearDisplay(0);
       lc.clearDisplay(1);
@@ -87,13 +96,16 @@ void loop()
       kikker_update();
       lcd_print_spel_status();
       break;
+    case DOOD_SETUP:
+      respawn_timer = RESPAWN_TIJD;
+      state = DOOD;
     case DOOD:
       // respawn wanneer dood
       respawn_timer++;
       teken_sterfte();
-      if (respawn_timer > RESPAWN_TIJD){
-        state = SPEL;
-        respawn_timer = 0;
+      if (respawn_timer > 0){
+        state = SPEL_SETUP;
+        respawn_timer--;
       }
       break;
   }
