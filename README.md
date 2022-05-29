@@ -3,6 +3,9 @@
 ## Schema kabel layout
 ![Arduino schema kabel layout](/schema/ARDUINO_SCHEMA.png)
 
+### Compact
+![Arduino schema kabel layout (compact)](/schema/ARDUINO_SCHEMA_compact.png)
+
 ## Hardware
 - Arduino UNO
 - 2x 8x8 LED Matrix Display Max7219 LED Matrix Panel Module Led Driver Board for Arduino
