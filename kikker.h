@@ -1,9 +1,12 @@
 #pragma once
+
+bool huisjes_compleet();
+
 // === Kikker ===
 const int COOLDOWN = 2; // maakt de kikker makkelijker te besturen
 const bool TEST_MODE = false;
 
-int levens = 5;
+int levens = 3;
 int timer;
 
 bool levend;
@@ -11,7 +14,7 @@ bool levend;
 int kikkerX;
 int kikkerY;
 
-void kikker_reset(){
+void kikker_reset(){ // bij start spel
   kikkerX = 4;
   kikkerY = 0;
   levend = true;
@@ -29,9 +32,14 @@ void kikker_sterf(){
   levens--;
   levend = false;
   kikker_reset();
+  state = DOOD;
 }
 void kikker_win(){
   Serial.println("Kikker veilig!");
+  if (huisjes_compleet()){
+    state = WIN;
+    return;
+  }
   kikker_reset();
 }
 
@@ -46,20 +54,21 @@ void kikker_update()
   {
     switch (kwadrant)
     {
-    case 3:
+      case 0:
       kikker_beweeg(0, -1);
       timer = COOLDOWN;
       break;
     case 1:
-      kikker_beweeg(0, 1);
+      kikker_beweeg(1, 0);
       timer = COOLDOWN;
       break;
     case 2:
-      kikker_beweeg(-1, 0);
+      kikker_beweeg(0, 1);
       timer = COOLDOWN;
       break;
-    case 4:
-      kikker_beweeg(1, 0);
+    
+    case 3:
+      kikker_beweeg(-1, 0);
       timer = COOLDOWN;
       break;
     default:

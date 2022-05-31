@@ -2,32 +2,41 @@
 
 
 // ==== GRAFISCH ====
-void teken_pixel(int x, int y) {
+
+void bewerk_pixel(int x, int y, bool aan){
   if (x >= 0 && x < 8) {
     if (y >= 0 && y < 8) {
-      lc.setLed(0, 7 - y, x, true);
+      lc.setLed(1, 7 - y, x, aan);
     } else if (y < 16) {
-      lc.setLed(1, y - 8, 7 - x, true);
+      lc.setLed(0, y - 8, 7 - x, aan);
     }
   }
 }
 
+void teken_pixel(int x, int y) {
+  bewerk_pixel(x,y,true);
+}
+
 void teken_leegte(int x, int y) {
-  if (x >= 0 && x < 8) {
-    if (y >= 0 && y < 8) {
-      lc.setLed(0, y, x, false);
-    } else if (y < 16) {
-      lc.setLed(1, y - 8, x, false);
-    }
-  }
+  bewerk_pixel(x,y,false);
 }
 
 void teken_sterfte() {
   for (int y = 0; y < 8; y++) {
-    lc.setRow(0, y, true);
+    lc.setRow(1, y, 0b11111111);
+    lc.setRow(0, y, 0b11111111);
+    delay(200);
   }
-  for (int y = 8; y < 16; y++) {
-    lc.setRow(1, y, true);
+}
+
+void teken_gewonnen(){
+  lc.clearDisplay(0);
+  lc.clearDisplay(1);
+  for (int y = 0; y < 16; y++) {
+    for (int x = 0; x < 8; x++) {
+      teken_pixel(x,y);
+      delay(20);
+    }
   }
 }
 
@@ -108,7 +117,7 @@ void teken_menu() {
       }
 
       if (huidigeFrame % FRAMES_PER_LETTER == 0) {
-        lc.clearDisplay(0);  // scherm verversen iedere letter
+        lc.clearDisplay(1);  // scherm verversen iedere letter
         tik++;
       }
 
@@ -116,7 +125,7 @@ void teken_menu() {
       int l = cyclus[tik % 7];
       aan = (letters[l][y] >> x) & 1 == 1;
       if (aan) {
-        teken_pixel(x, y);
+        teken_pixel(7-x, 7-y);
       }
     }
   }

@@ -29,6 +29,15 @@ void huisjes_reset(){
   }
 }
 
+bool huisjes_compleet(){
+  for (int i = 0; i < aantal_huisjes; i++) {
+    if (!huisjes[i].voltooid) {
+      return false;
+    }
+  }
+  return true;
+}
+
 void huisjes_update() {
   int y = 15;
   // teken muren rond de huisjes

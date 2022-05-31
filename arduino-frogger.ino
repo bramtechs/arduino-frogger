@@ -6,21 +6,13 @@ enum State{
   MENU,
   SPEL_SETUP,
   SPEL,
-  DOOD_SETUP,
   DOOD,
-  WIN_SETUP,
   WIN
 };
 State state = MENU;
 
 const int FPS = 10;
 int huidigeFrame;
-
-const int RESPAWN_TIJD = 30; //3 sec
-int respawn_timer;
-
-const int GREEN = 0;
-const int RED = 1;
 
 // DATA IN-pin, CLK-pin, LOAD(/CS)-pin, aantal schermen
 LedControl lc = LedControl(2, 3, 4, 2);
@@ -57,9 +49,9 @@ void setup()
 
   // led setup
   lc.shutdown(0,false); 
-  lc.setIntensity(0, 4);
+  lc.setIntensity(0, 7);
   lc.shutdown(1,false); 
-  lc.setIntensity(0, 4);
+  lc.setIntensity(1, 7);
   
   // joystick setup
   pinMode(VRx, INPUT);       // VRx
@@ -75,17 +67,21 @@ void loop()
 {
   switch (state){
     case MENU_SETUP:
-      lcd_print_menu();
       huisjes_reset();
+      lc.clearDisplay(0);
+      levens = 3;
       state = MENU;
     case MENU:
+      lcd_print_menu();
       teken_menu();
       if (!joy_is_deadzone()){ // menu verlaten door joystick te bewegen
+        huidigeFrame = 0;
         state = SPEL;
       }
       break;
     case SPEL_SETUP: // per ronde
       kikker_reset();
+      delay(500);
       state = SPEL;
     case SPEL:
       lc.clearDisplay(0);
@@ -96,17 +92,19 @@ void loop()
       kikker_update();
       lcd_print_spel_status();
       break;
-    case DOOD_SETUP:
-      respawn_timer = RESPAWN_TIJD;
-      state = DOOD;
     case DOOD:
       // respawn wanneer dood
-      respawn_timer++;
       teken_sterfte();
-      if (respawn_timer > 0){
+      if (levens > 0){
         state = SPEL_SETUP;
-        respawn_timer--;
+      }else{
+        state = MENU_SETUP; //verloren!
       }
+      break;
+    case WIN:
+      lcd_print_gewonnen();
+      teken_gewonnen();
+      state = MENU_SETUP; //gewonnen!
       break;
   }
   huidigeFrame++;
