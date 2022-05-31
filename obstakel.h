@@ -23,9 +23,12 @@ Obstakel autos[] = {
   {7,5,-1},
   
   {2,4,1},
-  
   {3,4,1},
   
+  {7,4,1},
+  {8,4,1},
+  {9,4,1},
+
   {4,2,-1},
   {5,2,-1},
   
@@ -39,6 +42,18 @@ int aantal_autos = sizeof(autos)/sizeof(autos[0]);
 // === BOOMSTAMMEN === //
 Obstakel stammen[] = {
   
+  {2,14,1},
+  {3,14,1},
+  {4,14,1},
+  
+  {9,14,1},
+  {10,14,1},
+  {11,14,1},
+
+  {4,13,-1},
+  {5,13,-1},
+  {6,13,-1},
+
   {1,12,1},
   {2,12,1},
   {3,12,1},
@@ -50,18 +65,24 @@ Obstakel stammen[] = {
   {2,11,-1},
   {3,11,-1},
   {4,11,-1},
+  {5,11,-1},
 
   {1,10,1},
   {2,10,1},
   {3,10,1},
   
-  {4,9,1},
-  {3,9,1},
-  {2,9,1},
+  {7,10,1},
+  {8,10,1},
+  {9,10,1},
+  {10,10,1},
 
+  {2,9,1},
+  {3,9,1},
+  {4,9,1},
   {5,9,1},
-  {6,9,1},
-  {7,9,1},
+
+  {8,9,1},
+  {9,9,1},
 
 };
 int aantal_stammen = sizeof(stammen)/sizeof(stammen[0]);
@@ -79,7 +100,7 @@ bool obstakel_raakt(int x, int y){
   return false;
 }
 
-boolean kikkerMeegevoerd = false;
+bool kikkerMeegevoerd = false;
 
 void stammen_update(){
   if (huidigeFrame % 10 == 0)
@@ -103,7 +124,7 @@ void stammen_update(){
     int rij = 0b11111111; // alle ledjes opgelicht
      // vul de rij op
     for (int x = 0; x < 8; x++){
-      boolean isStam = false;
+      bool isStam = false;
       for (int i = 0; i < aantal_stammen; i++){
         // is op deze pixel een boomstam?
         if (stammen[i].x == x && stammen[i].y == y){
@@ -126,7 +147,7 @@ void stammen_update(){
          kikker_sterf();
       }
     }
-    lc.setRow(1,y%8,rij); //geef de rij door
+    lc.setRow(0,y%8,rij); //geef de rij door
   }
 }
 
