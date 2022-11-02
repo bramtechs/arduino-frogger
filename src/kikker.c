@@ -43,7 +43,5 @@ void kikker_update() {
     }
 
     // teken de kikker!
-    if (huidige_frame % 2 == 1) {
-        teken_pixel(kikkerX, kikkerY,GREEN);
-    }
+    teken_pixel(kikkerX, kikkerY,GREEN);
 }

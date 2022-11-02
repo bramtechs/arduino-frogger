@@ -1,5 +1,6 @@
 #include "frogger.h"
 #include "kikker.h"
+#include "lcd.h"
 
 State state = SPEL;
 int huidige_frame = 0;
@@ -18,7 +19,7 @@ void frogger_setup() {
 void frogger_loop() {
     switch (state) {
         case MENU:
-            //lcd_print_menu();
+            lcd_print_menu();
             //teken_menu();
             break;
         case SPEL:
@@ -28,7 +29,7 @@ void frogger_loop() {
             //stammen_update();
             //huisjes_update();
             kikker_update();
-            //lcd_print_spel_status();
+            lcd_print_spel_status();
             break;
         case DOOD:
             // respawn wanneer dood

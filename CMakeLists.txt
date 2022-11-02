@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.0)
 project(frogger_emulator C)
 
-set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD 99)
 
 # Adding Raylib
 include(FetchContent)
@@ -14,7 +14,7 @@ FetchContent_MakeAvailable(raylib)
 set(PROJECT_INCLUDE "${CMAKE_CURRENT_LIST_DIR}") # Define PROJECT_INCLUDE to be the path to the include directory of the project
 
 # Declaring our executable
-add_executable(${PROJECT_NAME} "src/main.c" "src/kikker.c" "src/frogger.c")
+add_executable(${PROJECT_NAME} "src/main.c" "src/kikker.c" "src/frogger.c" src/lcd.c)
 target_sources(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_INCLUDE})
 target_link_libraries(${PROJECT_NAME} PRIVATE raylib)
