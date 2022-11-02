@@ -1,0 +1,6 @@
+set -xe
+cmake -S  . -B build
+cd build
+cmake --build .
+./frogger_emulator
+cd ..

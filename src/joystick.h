@@ -5,7 +5,8 @@ const int DEAD_ZONE = 50;
 int vorigKwadrant;
 int cooldownFrames;
 
-// de richting van de joystick
+// joystick in een richting vasthouden: matige snelheid
+// joystick keer op keer "aanduwen": extra snelheid
 int joy_get_kwadrant()
 {
   float x = map(analogRead(VRx), 0, 1023, -512, 512);
@@ -13,9 +14,9 @@ int joy_get_kwadrant()
 
   //vrkwrtl(x^2+y^2)
   int joy_hoek = (int)(atan2(x, y) * RAD_TO_DEG) - 45;
-  int hoek = (360+joy_hoek) % 360;
+  int hoek = (360 + joy_hoek) % 360;
 
-  int kwadrant = hoek / 90;
+  int kwadrant = hoek / (360 / 4) + 1;
 
   return kwadrant;
 }
